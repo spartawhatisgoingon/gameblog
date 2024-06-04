@@ -1,12 +1,10 @@
-package sparta.gameblog.controller;
+package sparta.gameblog.web.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sparta.gameblog.dto.PostCreateRequestDto;
-import sparta.gameblog.dto.PostCreateResponseDto;
 import sparta.gameblog.service.PostService;
 
 @RestController
