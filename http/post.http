@@ -1,0 +1,9 @@
+### post create
+POST http://localhost:8081/api/post
+Content-Type: application/json
+
+{
+"title": "hello",
+"contents": "this is contents"
+}
+### hk

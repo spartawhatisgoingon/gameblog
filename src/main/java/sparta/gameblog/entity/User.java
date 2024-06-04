@@ -2,10 +2,12 @@ package sparta.gameblog.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
+import lombok.Getter;
 import sparta.gameblog.constant.StatusCode;
 import sparta.gameblog.constant.UserRole;
 
 @Entity
+@Getter
 public class User extends Timestamp {
 
     @Id
