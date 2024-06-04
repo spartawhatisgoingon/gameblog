@@ -1,13 +1,25 @@
 package sparta.gameblog.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Token {
+
     @Id
-    private String token;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "token_id")
+    private long id;
+
+    private UUID token; // uuid 형식으로 넣기
 
     private LocalDateTime expiredAt;
 
@@ -19,9 +31,23 @@ public class Token {
     private User user;
 
 
+    @Builder
+    public Token(Type type, User user, int emailTokenExpirationSeconds ) {
+        this.expiredAt = LocalDateTime.now().plusSeconds(emailTokenExpirationSeconds);
+        this.token = UUID.randomUUID();
+        this.type = type;
+        this.user = user;
+    }
+
     public enum Type {
         REFRESH_TOKEN,
         EMAIL_VALIDATION_TOKEN
     }
 
+
+    // domain logic
+    @Transient
+    public boolean expired() {
+        return this.expiredAt.isBefore(LocalDateTime.now());
+    }
 }

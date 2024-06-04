@@ -23,7 +23,7 @@ public class PostService {
 
     public PostGetResponseDto getPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> (new IllegalArgumentException("postId에 맞는 게시글이 존재하지 않습니다."))
+                () -> (new RuntimeException("postId에 맞는 게시글이 존재하지 않습니다."))
         );
         return new PostGetResponseDto(post);
     }
