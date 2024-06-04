@@ -5,7 +5,7 @@ import sparta.gameblog.entity.Post;
 import java.time.LocalDateTime;
 
 @Getter
-public class ResponsePostDto {
+public class PostCreateResponseDto {
     private Long id;
     private String title;
     private String contents;
@@ -15,7 +15,7 @@ public class ResponsePostDto {
     private LocalDateTime updated_at;
 
     // 유저 정보는 포함하지 않았습니다.
-    public ResponsePostDto(Post post) {
+    public PostCreateResponseDto(Post post) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.contents = post.getContents();
