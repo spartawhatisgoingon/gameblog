@@ -1,4 +1,4 @@
-package sparta.gameblog.web;
+package sparta.gameblog.web.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
