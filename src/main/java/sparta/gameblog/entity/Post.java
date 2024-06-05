@@ -1,15 +1,12 @@
 package sparta.gameblog.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import sparta.gameblog.dto.PostCreateRequestDto;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 public class Post extends Timestamp {
     @Id
@@ -23,7 +20,7 @@ public class Post extends Timestamp {
     @JoinColumn(name = "user_id")
     private User user;
 
-
+    @Builder
     public Post(String title, String contents) {
         this.title = title;
         this.contents = contents;

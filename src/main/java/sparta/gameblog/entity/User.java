@@ -2,16 +2,14 @@ package sparta.gameblog.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import lombok.Getter;
-import sparta.gameblog.constant.StatusCode;
-import sparta.gameblog.constant.UserRole;
-import lombok.AccessLevel;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 
 @Getter
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class User extends Timestamp {
 
     @Id
@@ -38,6 +36,10 @@ public class User extends Timestamp {
     @Enumerated
     private Role role; // 0: normal, 1: admin
 
+    /*
+     * 이거의 장점? -> 위에다 만들면 NoArgsCons & AllArgsCons 를 다 생성해야함
+     * 거기다가 id 는 repository 가 알아서 만들도록 위임해야하는데 AllArgs 를 사용하면 id 도 기본값으로 자동 세팅됨
+     */
     @Builder
     public User(String password, String name, String email, StatusCode statusCode) {
         this.password = password;
@@ -45,6 +47,12 @@ public class User extends Timestamp {
         this.email = email;
         this.statusCode = statusCode;
         this.role = Role.NORMAL;
+    }
+
+    // domain logic
+    @Transient
+    public void verify() {
+        this.statusCode = StatusCode.ACTIVE;
     }
 
     public enum StatusCode {
@@ -61,12 +69,6 @@ public class User extends Timestamp {
     public enum Role {
         NORMAL,
         ADMIN
-    }
-
-    // domain logic
-    @Transient
-    public void verify() {
-        this.statusCode = StatusCode.ACTIVE;
     }
 
 }
