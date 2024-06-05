@@ -14,7 +14,6 @@ import sparta.gameblog.smtp.service.SmtpService;
 @RestController
 @RequestMapping("/api/user/email-verification")
 @RequiredArgsConstructor
-@Transactional
 public class SmtpController {
 
     private final SmtpService smtpService;

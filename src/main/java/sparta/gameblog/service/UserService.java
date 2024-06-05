@@ -14,11 +14,12 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    public final User signup(UserSignupRequestDto requestDto) {
+    public User signup(UserSignupRequestDto requestDto) {
         User user = this.userMapper.toEntity(requestDto);
         return this.userRepository.save(user);
     }
 
+    @Transactional
     public void verify(User user) {
         user.verify();
     }
