@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Getter
@@ -53,6 +54,14 @@ public class User extends Timestamp {
     @Transient
     public void verify() {
         this.statusCode = StatusCode.ACTIVE;
+    }
+
+    @Transactional
+    public void updateProfile(String name, String email, String introduction, String password) {
+        this.name = name;
+        this.email = email;
+        this.introduction = introduction;
+        this.password = password;
     }
 
     public enum StatusCode {
