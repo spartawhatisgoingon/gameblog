@@ -5,7 +5,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import sparta.gameblog.SortType;
+import sparta.gameblog.dto.*;
 import sparta.gameblog.dto.request.PostCreateRequestDto;
 import sparta.gameblog.dto.request.PostUpdateRequestDto;
 import sparta.gameblog.dto.response.PostCreateResponseDto;
@@ -19,6 +22,10 @@ import sparta.gameblog.exception.ErrorCode;
 import sparta.gameblog.mapper.PostMapper;
 import sparta.gameblog.repository.PostRepository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -41,9 +48,18 @@ public class PostService {
         return new PostGetResponseDto(post);
     }
 
-    public PostsResponseDto getPosts(int page) {
-        Pageable pageable = PageRequest.of(page, 10);
-        Page<Post> posts = postRepository.findAll(pageable);
+    public PostsResponseDto getPosts(int page, String sortTypeStr, String search, String start, String end) {
+        SortType sortType = SortType.fromColumn(sortTypeStr);
+        Sort sort = Sort.by(sortType.getColumn());
+        Pageable pageable = PageRequest.of(page, 10, sort);
+
+        search = search != null ? search : "";
+        LocalDateTime startDate = start != null ?
+                LocalDate.parse(start, DateTimeFormatter.ISO_DATE_TIME).atStartOfDay() : LocalDateTime.MIN;
+        LocalDateTime endDate = end != null ?
+                LocalDate.parse(end, DateTimeFormatter.ISO_DATE_TIME).atTime(LocalTime.MAX) : LocalDateTime.MAX;
+        Page<Post> posts = postRepository.findByTitleContainingAndCreatedAtBetween(search, startDate, endDate, pageable);
+
         List<PostGetResponseDto> postGetResponseDtoList = posts.map(PostGetResponseDto::new).getContent();
 
         if(posts.getTotalElements() > 0 && postGetResponseDtoList.isEmpty()) {

@@ -31,8 +31,12 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getPosts(@RequestParam int page) {
-        PostsResponseDto responseDto = postService.getPosts(page);
+    public ResponseEntity<?> getPosts(@RequestParam int page,
+                                      @RequestParam(required = false) String sort,
+                                      @RequestParam(required = false) String search,
+                                      @RequestParam(required = false) String start,
+                                      @RequestParam(required = false) String end) {
+        PostsResponseDto responseDto = postService.getPosts(page, sort, search, start, end);
 
         if (responseDto.getData().isEmpty())
             return ResponseEntity.status(HttpStatus.OK).body("먼저 작성하여 소식을 알려보세요!");
