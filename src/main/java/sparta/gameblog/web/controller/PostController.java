@@ -1,5 +1,6 @@
 package sparta.gameblog.web.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<?> createPost(@RequestBody PostCreateRequestDto requestDto) {
+    public ResponseEntity<?> createPost(@Valid @RequestBody PostCreateRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body((postService.createPost(requestDto)));
     }
 

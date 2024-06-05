@@ -6,6 +6,8 @@ import sparta.gameblog.dto.PostCreateRequestDto;
 import sparta.gameblog.dto.PostCreateResponseDto;
 import sparta.gameblog.dto.PostGetResponseDto;
 import sparta.gameblog.entity.Post;
+import sparta.gameblog.exception.BusinessException;
+import sparta.gameblog.exception.ErrorCode;
 import sparta.gameblog.mapper.PostMapper;
 import sparta.gameblog.repository.PostRepository;
 
@@ -23,7 +25,7 @@ public class PostService {
 
     public PostGetResponseDto getPost(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow(
-                () -> (new RuntimeException("postId에 맞는 게시글이 존재하지 않습니다."))
+                () -> (new BusinessException(ErrorCode.POST_NOT_FOUND))
         );
         return new PostGetResponseDto(post);
     }
