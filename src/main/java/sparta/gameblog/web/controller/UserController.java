@@ -31,6 +31,8 @@ public class UserController {
     public ResponseEntity<?> signup(@Valid @RequestBody UserSignupRequestDto requestDto) {
         User user = this.userService.signup(requestDto);
         Token token = this.tokenService.createEmailValidationToken(user);
+
+        // NOTE: async
         smtpService.sendEmail(user.getEmail(), authEmailTitle, token.getToken().toString());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
