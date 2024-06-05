@@ -7,10 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import sparta.gameblog.dto.PostCreateRequestDto;
-import sparta.gameblog.dto.PostCreateResponseDto;
-import sparta.gameblog.dto.PostGetResponseDto;
-import sparta.gameblog.dto.PostsResponseDto;
+import sparta.gameblog.dto.*;
 import sparta.gameblog.entity.Post;
 import sparta.gameblog.exception.BusinessException;
 import sparta.gameblog.exception.ErrorCode;
@@ -50,5 +47,22 @@ public class PostService {
         return PostsResponseDto.builder().page(page)
                 .data(postGetResponseDtoList)
                 .build();
+    }
+
+    public void deletePost(Long postId) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> (new RuntimeException("postId에 맞는 게시글이 존재하지 않습니다."))
+        );
+        postRepository.delete(post);
+    }
+
+    public PostUpdateResponseDto updatePost(Long postId, PostUpdateRequestDto requestDto) {
+        Post post = postRepository.findById(postId).orElseThrow(
+                () -> (new BusinessException(ErrorCode.POST_NOT_FOUND))
+        );
+        post.update(requestDto.getTitle(), requestDto.getContents());
+        postRepository.save(post);
+
+        return new PostUpdateResponseDto(post);
     }
 }

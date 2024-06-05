@@ -6,9 +6,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sparta.gameblog.dto.PostCreateRequestDto;
-import sparta.gameblog.dto.PostGetResponseDto;
-import sparta.gameblog.dto.PostsResponseDto;
+import sparta.gameblog.dto.*;
+import sparta.gameblog.entity.Post;
 import sparta.gameblog.exception.BusinessException;
 import sparta.gameblog.exception.ErrorCode;
 import sparta.gameblog.service.PostService;
@@ -41,4 +40,18 @@ public class PostController {
 
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<?> deletePost(@PathVariable Long postId) {
+        postService.deletePost(postId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @PutMapping("/{postId}")
+    public ResponseEntity<?> updatePost(
+            @PathVariable Long postId, @Valid @RequestBody PostUpdateRequestDto requestDto) {
+        PostUpdateResponseDto response = postService.updatePost(postId, requestDto);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 }
