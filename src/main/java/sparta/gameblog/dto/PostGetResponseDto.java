@@ -1,26 +1,29 @@
 package sparta.gameblog.dto;
 
 import lombok.Getter;
-import lombok.Setter;
 import sparta.gameblog.entity.Post;
+
 import java.time.LocalDateTime;
 
-@Setter
 @Getter
-public class PostCreateResponseDto {
+public class PostGetResponseDto {
     private Long id;
     private String title;
     private String contents;
-    private int user_id;
+    private Long userId;
     private String user_email;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
 
-    // 유저 정보는 포함하지 않았습니다.
-    public PostCreateResponseDto(Post post) {
+    public PostGetResponseDto(Post post) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.contents = post.getContents();
+
+        // 현재 User는 null이기 때문에 nullpointexception 오류가 발생합니다.
+        // this.userId = post.getUser().getId();
+        // this.user_email = post.getUser().getEmail();
+
         this.created_at = post.getCreatedAt();
         this.updated_at = post.getUpdatedAt();
     }

@@ -1,12 +1,10 @@
-package sparta.gameblog.controller;
+package sparta.gameblog.web.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sparta.gameblog.dto.PostCreateRequestDto;
-import sparta.gameblog.dto.PostCreateResponseDto;
 import sparta.gameblog.service.PostService;
 
 @RestController
@@ -19,5 +17,9 @@ public class PostController {
     @PostMapping
     public ResponseEntity<?> createPost(@RequestBody PostCreateRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body((postService.createPost(requestDto)));
+    }
+    @GetMapping("/{postId}")
+    public ResponseEntity<?> getPost(@PathVariable Long postId) {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getPost(postId));
     }
 }
