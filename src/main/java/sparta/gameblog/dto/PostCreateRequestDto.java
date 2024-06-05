@@ -1,14 +1,15 @@
 package sparta.gameblog.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class PostCreateRequestDto {
+    @NotBlank
     private String title;
-    private String contents;
 
-    public PostCreateRequestDto(String title, String contents){
-        this.title = title;
-        this.contents = contents;
-    }
+    @NotBlank
+    private String contents;
 }

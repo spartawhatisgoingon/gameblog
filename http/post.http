@@ -1,5 +1,5 @@
 ### post create
-POST http://localhost:8081/api/post
+POST http://localhost:8080/api/post
 Content-Type: application/json
 
 {
@@ -8,7 +8,7 @@ Content-Type: application/json
 }
 
 ### post create
-GET http://localhost:8081/api/post/2
+GET http://localhost:8080/api/post/2
 Content-Type: application/json
 
 {
