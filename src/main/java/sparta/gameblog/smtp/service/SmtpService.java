@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sparta.gameblog.dto.TokenRequestDto;
@@ -20,6 +21,7 @@ public class SmtpService {
     private final JavaMailSender mailSender;
     private final TokenRepository tokenRepository;
 
+    @Async
     public void sendEmail(String toEmail, String title, String content) {
         SimpleMailMessage message = createEmailForm(toEmail, title, content);
 
