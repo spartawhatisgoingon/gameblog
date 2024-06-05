@@ -16,4 +16,5 @@ Content-Type: application/json
   "contents": "this is contents"
 }
 
-### hk
+### 게시물 리스트 조회
+GET http://localhost:8080/api/post?page=1
