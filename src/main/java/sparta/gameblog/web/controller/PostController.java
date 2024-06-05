@@ -18,4 +18,8 @@ public class PostController {
     public ResponseEntity<?> createPost(@RequestBody PostCreateRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body((postService.createPost(requestDto)));
     }
+    @GetMapping("/{postId}")
+    public ResponseEntity<?> getPost(@PathVariable Long postId) {
+        return ResponseEntity.status(HttpStatus.OK).body(postService.getPost(postId));
+    }
 }
