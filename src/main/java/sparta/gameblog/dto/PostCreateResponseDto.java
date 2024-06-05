@@ -2,11 +2,13 @@ package sparta.gameblog.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import sparta.gameblog.entity.Post;
 import java.time.LocalDateTime;
 
 @Setter
 @Getter
+@ToString
 public class PostCreateResponseDto {
     private Long id;
     private String title;
