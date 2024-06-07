@@ -1,10 +1,11 @@
 ### post create
 POST http://localhost:8080/api/post
 Content-Type: application/json
+Authorization: Bearer {{access_token}}
 
 {
-"title": "hello",
-"contents": "this is contents"
+  "title": "hello??",
+  "contents": "this is contents"
 }
 
 ### post create

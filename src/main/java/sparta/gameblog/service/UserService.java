@@ -19,6 +19,11 @@ public class UserService {
         return this.userRepository.save(user);
     }
 
+    public User getUserByEmail(String email) {
+        return this.userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("user 없음"));
+    }
+
     @Transactional
     public void verify(User user) {
         user.verify();
