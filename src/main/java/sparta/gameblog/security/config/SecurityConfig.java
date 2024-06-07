@@ -85,11 +85,8 @@ public class SecurityConfig {
 
                         requests
                                 .requestMatchers(HttpMethod.POST, "/api/post").authenticated()
-//                                .requestMatchers(HttpMethod.DELETE, "/api/user").authenticated()
-//                                .requestMatchers(HttpMethod.POST, "/api/auth/reissue").authenticated()
-//                                .requestMatchers(HttpMethod.PUT, "/api/user/{id}").authenticated()
-//                                .requestMatchers(HttpMethod.PUT, "/api/post").authenticated()
-//                                .requestMatchers(HttpMethod.POST, "/api/user/email-verification").anonymous()
+                                .requestMatchers(HttpMethod.DELETE, "/api/post").authenticated()
+                                .requestMatchers(HttpMethod.PUT, "/api/post").authenticated()
                                 .anyRequest().permitAll()
         );
 
