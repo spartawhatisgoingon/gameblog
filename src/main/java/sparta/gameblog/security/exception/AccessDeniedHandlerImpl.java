@@ -25,7 +25,7 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
                         .path(request.getRequestURI())
                         .status(HttpStatus.FORBIDDEN.value())
                         .error(HttpStatus.FORBIDDEN.getReasonPhrase())
-                        .message(ErrorMessage.AUTHORIZATION_ERROR)
+                        .message("권한이 없습니다.")
                         .build().toString()
         );
     }

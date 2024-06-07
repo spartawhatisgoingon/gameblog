@@ -19,8 +19,8 @@ public class AuthenticationEntryPointImpl implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         boolean expired = JwtUtil.isExpiredAccessToken(request);
         int statusCode = expired ? 499 : HttpStatus.UNAUTHORIZED.value();
-        String error = expired ? ErrorMessage.EXPIRED_ACCESS_TOKEN : HttpStatus.UNAUTHORIZED.getReasonPhrase();
-        String message = expired ? ErrorMessage.EXPIRED_ACCESS_TOKEN : ErrorMessage.AUTHENTICATION_ERROR;
+        String error = expired ? "access token 이 만료되었습니다." : HttpStatus.UNAUTHORIZED.getReasonPhrase();
+        String message = expired ? "access token 이 만료되었습니다." : "username 또는 password 가 잘못되었습니다.";
 
         response.setStatus(statusCode);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

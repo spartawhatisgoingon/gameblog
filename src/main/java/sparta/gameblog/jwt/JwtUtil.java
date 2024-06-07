@@ -1,10 +1,11 @@
 package sparta.gameblog.jwt;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -14,7 +15,6 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
-@Slf4j
 @Component
 public class JwtUtil {
     public static final String CLAIM_ROLE = "role";
@@ -30,6 +30,10 @@ public class JwtUtil {
 
     private Key key;
 
+    static public boolean isExpiredAccessToken(HttpServletRequest request) {
+        return request.getAttribute("expired") != null && (Boolean) request.getAttribute("expired");
+    }
+
     @PostConstruct
     public void init() {
         byte[] bytes = Base64.getDecoder().decode(jwtKey);
@@ -41,10 +45,9 @@ public class JwtUtil {
 
         return Jwts.builder()
                 // set 으로 하는건 정해진것
-                .setSubject(user.getId() + "")
+                .setSubject(user.getEmail())
                 .setExpiration(new Date(date.getTime() + 1000 * 60 * 30))
                 .setIssuedAt(date)
-
                 // claim 우리가 넣고 싶은 정보들
                 .claim(CLAIM_EMAIL, user.getEmail())
                 .claim(CLAIM_ROLE, user.getRole())
@@ -67,10 +70,6 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(accessToken)
                 .getBody();
-    }
-
-    static public boolean isExpiredAccessToken(HttpServletRequest request) {
-        return request.getAttribute("expired") != null && (Boolean) request.getAttribute("expired");
     }
 
 }
