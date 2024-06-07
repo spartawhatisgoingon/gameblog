@@ -26,7 +26,7 @@ public class LoggingAspect {
 
             Object result = joinPoint.proceed();
 
-            logTrace.end(status, result.toString());
+            logTrace.end(status, result == null ? "" : result.toString());
             return result;
         } catch (Exception e) {
             logTrace.exception(status, e);
