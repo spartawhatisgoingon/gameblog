@@ -1,9 +1,9 @@
 package sparta.gameblog.mapper;
 
 import org.springframework.stereotype.Component;
-import sparta.gameblog.dto.PostCreateRequestDto;
-import sparta.gameblog.dto.PostCreateResponseDto;
-import sparta.gameblog.dto.PostUpdateRequestDto;
+import sparta.gameblog.dto.request.PostCreateRequestDto;
+import sparta.gameblog.dto.response.PostCreateResponseDto;
+import sparta.gameblog.dto.request.PostUpdateRequestDto;
 import sparta.gameblog.entity.Post;
 import sparta.gameblog.entity.User;
 

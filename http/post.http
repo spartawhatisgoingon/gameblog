@@ -17,19 +17,22 @@ Content-Type: application/json
   "contents": "this is contents"
 }
 
+### 게시물 조회
+GET http://localhost:8080/api/post/12
+
 ### 게시물 리스트 조회
 GET http://localhost:8080/api/post?page=1
 
 ### 업데이트
-PUT http://localhost:8080/api/post/9
+PUT http://localhost:8080/api/post/13
 Authorization: Bearer {{access_token}}
 Content-Type: application/json
 
 {
-  "title": "zz",
-  "contents": "ffff"
+  "title": "updatedd",
+  "contents": "updated"
 }
 
 ### 삭제
-DELETE http://localhost:8080/api/post/10
+DELETE http://localhost:8080/api/post/13
 Authorization: Bearer {{access_token}}

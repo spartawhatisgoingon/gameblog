@@ -3,7 +3,7 @@ package sparta.gameblog.mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import sparta.gameblog.dto.UserSignupRequestDto;
+import sparta.gameblog.dto.request.UserSignupRequestDto;
 import sparta.gameblog.entity.User;
 
 @Component

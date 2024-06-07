@@ -2,12 +2,11 @@ package sparta.gameblog.web.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import sparta.gameblog.dto.TokenRequestDto;
+import sparta.gameblog.dto.request.TokenRequestDto;
 import sparta.gameblog.service.UserService;
 import sparta.gameblog.smtp.service.SmtpService;
 

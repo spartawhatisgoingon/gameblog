@@ -3,7 +3,7 @@ package sparta.gameblog.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sparta.gameblog.dto.UserSignupRequestDto;
+import sparta.gameblog.dto.request.UserSignupRequestDto;
 import sparta.gameblog.entity.User;
 import sparta.gameblog.mapper.UserMapper;
 import sparta.gameblog.repository.UserRepository;

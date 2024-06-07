@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import sparta.gameblog.dto.CommentCreateRequestDto;
+import sparta.gameblog.dto.request.CommentCreateRequestDto;
 import sparta.gameblog.entity.User;
 import sparta.gameblog.security.principal.UserPrincipal;
 import sparta.gameblog.service.CommentService;
