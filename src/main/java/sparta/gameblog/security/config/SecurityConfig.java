@@ -82,6 +82,7 @@ public class SecurityConfig {
         );
 
         http.authorizeHttpRequests(requests ->
+
                         requests
                                 .requestMatchers(HttpMethod.POST, "/api/post").authenticated()
 //                                .requestMatchers(HttpMethod.DELETE, "/api/user").authenticated()

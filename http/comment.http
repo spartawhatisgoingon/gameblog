@@ -1,0 +1,8 @@
+### post create
+POST http://localhost:8080/api/post/1/comment
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "comment": "hello comment"
+}

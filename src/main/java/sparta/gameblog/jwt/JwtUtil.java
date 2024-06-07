@@ -17,6 +17,7 @@ import java.util.Date;
 
 @Component
 public class JwtUtil {
+    public static final String CLAIM_ID = "id";
     public static final String CLAIM_ROLE = "role";
     public static final String CLAIM_EMAIL = "email";
     public static final String CLAIM_NAME = "name";
@@ -49,6 +50,7 @@ public class JwtUtil {
                 .setExpiration(new Date(date.getTime() + 1000 * 60 * 30))
                 .setIssuedAt(date)
                 // claim 우리가 넣고 싶은 정보들
+                .claim(CLAIM_ID, user.getId())
                 .claim(CLAIM_EMAIL, user.getEmail())
                 .claim(CLAIM_ROLE, user.getRole())
                 .claim(CLAIM_NAME, user.getName())
