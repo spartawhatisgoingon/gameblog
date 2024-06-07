@@ -30,7 +30,6 @@ public class AuthService {
         UserPrincipal userPrincipal = (UserPrincipal)authentication.getPrincipal();
         User user = userPrincipal.getUser();
 
-
         return LoginTokenDto.builder()
                 .accessToken(jwtUtil.createAccessToken(user))
                 .build();
