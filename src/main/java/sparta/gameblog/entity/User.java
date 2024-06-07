@@ -2,16 +2,15 @@ package sparta.gameblog.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.transaction.annotation.Transactional;
 
 
 @Getter
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Table(name = "users")
 public class User extends Timestamp {
 
@@ -19,11 +18,6 @@ public class User extends Timestamp {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private long id;
-
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     @Column(nullable = false)
     private String password;
@@ -48,22 +42,6 @@ public class User extends Timestamp {
      * 이거의 장점? -> 위에다 만들면 NoArgsCons & AllArgsCons 를 다 생성해야함
      * 거기다가 id 는 repository 가 알아서 만들도록 위임해야하는데 AllArgs 를 사용하면 id 도 기본값으로 자동 세팅됨
      */
-    @Builder
-    public User(String password, String name, String email, StatusCode statusCode, Role role) {
-        this.password = password;
-        this.name = name;
-        this.email = email;
-        this.statusCode = statusCode;
-        this.role = role;
-    }
-
-    @Builder
-    public User(Long id, String name, String email, Role role) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.role = role;
-    }
 
     // domain logic
     @Transient
