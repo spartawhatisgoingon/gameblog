@@ -70,7 +70,7 @@ public class SecurityConfig {
 //                        .requestMatchers(HttpMethod.POST, "/api/post").authenticated()
 //                        .requestMatchers(HttpMethod.PUT, "/api/post").authenticated()
 //                        .requestMatchers(HttpMethod.POST, "/api/user/email-verification").anonymous()
-                        requests.anyRequest().anonymous()
+                        requests.anyRequest().permitAll()
         );
 
         return http.build();

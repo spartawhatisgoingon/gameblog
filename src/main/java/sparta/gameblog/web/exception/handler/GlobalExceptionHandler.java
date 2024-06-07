@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler
     public ResponseEntity<BasicErrorResponse> handleBusinessException(BusinessException ex, HttpServletRequest request) {
         return ResponseEntity.status(ex.getStatusCode()).body(
                 BasicErrorResponse.builder()
@@ -27,6 +27,12 @@ public class GlobalExceptionHandler {
                         .build()
         );
     }
+
+    @ExceptionHandler
+    public ResponseEntity<?> handleBusinessException(Exception ex, HttpServletRequest request) {
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
 
     @ExceptionHandler
     ResponseEntity<BasicErrorResponse> handleBeanValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
