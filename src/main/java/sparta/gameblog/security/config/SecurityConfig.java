@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -19,21 +20,14 @@ import sparta.gameblog.jwt.JwtUtil;
 import sparta.gameblog.security.exception.AuthenticationEntryPointImpl;
 import sparta.gameblog.security.exception.AccessDeniedHandlerImpl;
 import sparta.gameblog.security.filter.JwtAuthenticationFilter;
+import sparta.gameblog.security.service.PrincipalOauth2UserService;
 
 
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-    // 1. security
-    // 2. password -> encrypt
-    // 3. security 기본으로 제공하는 로그인 방법
-    //   - form login -> api -> login controller -> access token
-    //   - basic -> Authorization: Bearer jwtotken ->
-    //s
-
-    // 1. access token 발급 -> 컨트롤러
-    // 2. 매 요청마다 header 를 확인해서 로그인 정보를 확인해야한다. -> filter
     private final JwtUtil jwtUtil;
+    private final PrincipalOauth2UserService principalOauth2UserService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -94,6 +88,14 @@ public class SecurityConfig {
         );
 
         http.addFilterAt(jwtAuthenticationFilter(), BasicAuthenticationFilter.class);
+        // http.oauth2Login(Customizer.withDefaults());
+
+        http.oauth2Login(httpSecurityOAuth2LoginConfigurer -> httpSecurityOAuth2LoginConfigurer
+                .loginPage("/login.html")
+                .defaultSuccessUrl("/hellowrodl")
+                .userInfoEndpoint()
+                .userService(principalOauth2UserService)
+            );
 
         return http.build();
     }

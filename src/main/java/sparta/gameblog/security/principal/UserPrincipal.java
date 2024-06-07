@@ -5,15 +5,23 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import sparta.gameblog.entity.User;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @RequiredArgsConstructor
-public class UserPrincipal implements UserDetails {
+public class UserPrincipal implements UserDetails, OAuth2User {
     private final User user;
+    private Map<String, Object> attributes;
+
+    @Override
+    public Map<String, Object> getAttributes() {
+        return attributes;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -52,5 +60,10 @@ public class UserPrincipal implements UserDetails {
     public boolean isEnabled() {
         // return this.user.isActive();
         return true;
+    }
+
+    @Override
+    public String getName() {
+        return "";
     }
 }
