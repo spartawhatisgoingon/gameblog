@@ -3,8 +3,8 @@ package sparta.gameblog.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Getter; import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 
 @Getter
@@ -41,18 +41,30 @@ public class User extends Timestamp {
      * 거기다가 id 는 repository 가 알아서 만들도록 위임해야하는데 AllArgs 를 사용하면 id 도 기본값으로 자동 세팅됨
      */
     @Builder
-    public User(String password, String name, String email, StatusCode statusCode) {
+    public User(String password, String name, String email, StatusCode statusCode, Role role) {
         this.password = password;
         this.name = name;
         this.email = email;
         this.statusCode = statusCode;
-        this.role = Role.NORMAL;
+        this.role = role;
+    }
+
+    @Builder
+    public User(String name, String email, Role role) {
+        this.name = name;
+        this.email = email;
+        this.role = role;
     }
 
     // domain logic
     @Transient
     public void verify() {
         this.statusCode = StatusCode.ACTIVE;
+    }
+
+    @Transient
+    public boolean isActive() {
+        return this.statusCode == statusCode.ACTIVE;
     }
 
     public enum StatusCode {
@@ -66,9 +78,18 @@ public class User extends Timestamp {
         DELETED
     }
 
+    @Getter
+    @RequiredArgsConstructor
     public enum Role {
-        NORMAL,
-        ADMIN
+        NORMAL(Authority.NORMAL),
+        ADMIN(Authority.ADMIN);
+
+        private final String authority;
+
+        public static class  Authority {
+            public static final String NORMAL = "ROLE_NORMAL";
+            public static final String ADMIN = "ROLE_ADMIN";
+        }
     }
 
 }

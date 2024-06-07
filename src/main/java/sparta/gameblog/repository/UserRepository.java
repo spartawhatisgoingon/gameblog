@@ -3,6 +3,8 @@ package sparta.gameblog.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import sparta.gameblog.entity.User;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+import java.util.Optional;
 
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByEmail(String email);
 }
