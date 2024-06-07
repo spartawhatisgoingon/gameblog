@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
 import sparta.gameblog.entity.User;
 import sparta.gameblog.security.principal.UserPrincipal;
 import sparta.gameblog.service.UserService;
 
+@Component
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserService userService;
