@@ -2,7 +2,6 @@ package sparta.gameblog.service;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,9 +19,6 @@ public class AuthService {
     private final JwtUtil jwtUtil;
 
     public LoginTokenDto login(@Valid UserLoginDto requestDto) {
-        String email = requestDto.getEmail();
-        String password = requestDto.getPassword();
-
         Authentication authentication = this.authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         requestDto.getEmail(), // principal

@@ -52,7 +52,7 @@ public class JwtUtil {
 
     public String getJwtFromHeader(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(AUTHORIZATION_TYPE) && bearerToken.startsWith(AUTHORIZATION_TYPE)) {
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(AUTHORIZATION_TYPE)) {
             return bearerToken.substring(7);
         }
         return null;

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Getter
 @Entity
 @NoArgsConstructor
+@Table(name = "users")
 public class User extends Timestamp {
 
     @Id
