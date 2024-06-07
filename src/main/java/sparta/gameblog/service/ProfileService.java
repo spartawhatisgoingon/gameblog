@@ -1,6 +1,8 @@
 package sparta.gameblog.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import sparta.gameblog.dto.ProfileRequestDto;
@@ -15,12 +17,16 @@ import sparta.gameblog.repository.UserRepository;
 public class ProfileService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public ProfileResponseDto getProfile(Long id) {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new BusinessException(ErrorCode.USER_NOT_FOUND)
         );
-        validateUser(user);
+
+        if(!user.isActive()) {
+            throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+        }
 
         return new ProfileResponseDto(user);
     }
@@ -30,26 +36,23 @@ public class ProfileService {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new BusinessException(ErrorCode.USER_NOT_FOUND)
         );
-        validateUser(user);
 
-        if(user.getPassword().equals(requestDto.getPassword_cur())) {
-            if(user.getPassword().equals(requestDto.getPassword())) {
+        if(!user.isActive()) {
+            throw new BusinessException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        String password = user.getPassword();
+        if(passwordEncoder.matches(requestDto.getPassword_cur(), password)) {
+            if(passwordEncoder.matches(requestDto.getPassword(), password)) {
                 throw new BusinessException(ErrorCode.SAME_PASSWORD);
             }
             user.updateProfile(
                     requestDto.getName(),
-                    requestDto.getEmail(),
                     requestDto.getIntroduction(),
                     requestDto.getPassword());
         } else {
             throw new BusinessException(ErrorCode.PASSWORD_MISMATCH);
         }
         return new ProfileResponseDto(user);
-    }
-
-    private void validateUser(User user) {
-        if(user.getStatusCode() != User.StatusCode.ACTIVE) {
-            throw new BusinessException(ErrorCode.USER_NOT_FOUND);
-        }
     }
 }

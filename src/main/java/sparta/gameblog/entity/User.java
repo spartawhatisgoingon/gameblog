@@ -71,9 +71,8 @@ public class User extends Timestamp {
     }
 
     @Transactional
-    public void updateProfile(String name, String email, String introduction, String password) {
+    public void updateProfile(String name, String introduction, String password) {
         this.name = name;
-        this.email = email;
         this.introduction = introduction;
         this.password = password;
     }
