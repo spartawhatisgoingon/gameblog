@@ -36,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String accessToken = jwtUtil.getJwtFromHeader(request);
 
         // token 이 없으면 생략하고 진행
-        if (accessToken == null) {
+        if (accessToken == null || !jwtUtil.validateToken(accessToken, request)) {
             filterChain.doFilter(request, response);
             return;
         }
