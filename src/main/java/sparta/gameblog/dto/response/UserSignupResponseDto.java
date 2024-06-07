@@ -1,4 +1,4 @@
-package sparta.gameblog.dto;
+package sparta.gameblog.dto.response;
 
 public class UserSignupResponseDto {
 

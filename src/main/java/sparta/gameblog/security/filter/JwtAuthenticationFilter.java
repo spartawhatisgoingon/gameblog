@@ -49,12 +49,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         User.Role role = User.Role.valueOf(claims.get(JwtUtil.CLAIM_ROLE, String.class));
 
         User user = User.builder()
+                .id(id)
                 .email(email)
                 .name(name)
                 .role(role)
                 .statusCode(statusCode)
                 .build();
-        user.setId(id);
         UserDetails userDetails = new UserPrincipal(user);
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

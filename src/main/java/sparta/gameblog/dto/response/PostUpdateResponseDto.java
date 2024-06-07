@@ -1,4 +1,4 @@
-package sparta.gameblog.dto;
+package sparta.gameblog.dto.response;
 
 
 import lombok.Getter;
@@ -9,13 +9,13 @@ import java.time.LocalDateTime;
 @Getter
 public class PostUpdateResponseDto {
 
-    private Long id;
-    private String title;
-    private String contents;
-    private Long userId;
-    private String userEmail;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private final Long id;
+    private final String title;
+    private final String contents;
+    private final Long userId;
+    private final String userEmail;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
 
     public PostUpdateResponseDto(Post post) {
         this.id = post.getId();

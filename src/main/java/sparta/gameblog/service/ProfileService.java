@@ -1,12 +1,11 @@
 package sparta.gameblog.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import sparta.gameblog.dto.ProfileRequestDto;
-import sparta.gameblog.dto.ProfileResponseDto;
+import sparta.gameblog.dto.request.ProfileRequestDto;
+import sparta.gameblog.dto.response.ProfileResponseDto;
 import sparta.gameblog.entity.User;
 import sparta.gameblog.exception.BusinessException;
 import sparta.gameblog.exception.ErrorCode;

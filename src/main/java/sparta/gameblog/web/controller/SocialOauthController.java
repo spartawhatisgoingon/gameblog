@@ -3,14 +3,11 @@ package sparta.gameblog.web.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sparta.gameblog.dto.NaverProfileResponseDto;
-import sparta.gameblog.entity.User;
+import sparta.gameblog.dto.response.NaverProfileResponseDto;
 import sparta.gameblog.oauth.NaverOauthService;
 import sparta.gameblog.oauth.NaverUserService;
-import sparta.gameblog.service.UserService;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
