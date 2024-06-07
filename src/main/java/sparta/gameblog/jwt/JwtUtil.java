@@ -21,6 +21,7 @@ public class JwtUtil {
     public static final String CLAIM_ROLE = "role";
     public static final String CLAIM_EMAIL = "email";
     public static final String CLAIM_NAME = "name";
+    public static final String CLAIM_STATUS_CODE = "status_code";
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String AUTHORIZATION_TYPE = "Bearer";
 
@@ -54,6 +55,7 @@ public class JwtUtil {
                 .claim(CLAIM_EMAIL, user.getEmail())
                 .claim(CLAIM_ROLE, user.getRole())
                 .claim(CLAIM_NAME, user.getName())
+                .claim(CLAIM_STATUS_CODE, user.getStatusCode())
                 .signWith(key, signatureAlgorithm)
                 .compact();
     }
