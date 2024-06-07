@@ -1,6 +1,8 @@
 package sparta.gameblog.jwt;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,6 +30,10 @@ public class JwtUtil {
     private String jwtKey;
 
     private Key key;
+
+    static public boolean isExpiredAccessToken(HttpServletRequest request) {
+        return request.getAttribute("expired") != null && (Boolean) request.getAttribute("expired");
+    }
 
     @PostConstruct
     public void init() {
@@ -67,4 +73,5 @@ public class JwtUtil {
                 .parseClaimsJws(accessToken)
                 .getBody();
     }
+
 }

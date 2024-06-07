@@ -3,6 +3,7 @@ package sparta.gameblog.security.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,10 +11,15 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import sparta.gameblog.jwt.JwtUtil;
+import sparta.gameblog.security.exception.AuthenticationEntryPointImpl;
+import sparta.gameblog.security.exception.AccessDeniedHandlerImpl;
 import sparta.gameblog.security.filter.JwtAuthenticationFilter;
+
 
 @Configuration
 @RequiredArgsConstructor
@@ -47,6 +53,17 @@ public class SecurityConfig {
     }
 
     @Bean
+    AccessDeniedHandler accessDeniedHandler() {
+        return new AccessDeniedHandlerImpl();
+    }
+
+    @Bean
+    AuthenticationEntryPoint authenticationEntryPoint() {
+        return new AuthenticationEntryPointImpl();
+    }
+
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable);
         http.httpBasic(AbstractHttpConfigurer::disable);
@@ -59,21 +76,25 @@ public class SecurityConfig {
         // TODO:
         // 1. 로그인 아이디 / 패스워드 틀렸을 때 예외 401
         // 2. 보안레벨 맞지 않을 때 예외 403
-//        http.exceptionHandling(e -> e
-//                .authenticationEntryPoint() // 401
-//                .accessDeniedHandler()
-//        )  // 403
+        http.exceptionHandling(e -> e
+                .accessDeniedHandler(accessDeniedHandler()) // 401
+                .authenticationEntryPoint(authenticationEntryPoint()) // 403
+        );
 
         http.authorizeHttpRequests(requests ->
-//                requests.requestMatchers(HttpMethod.DELETE, "/api/user").authenticated()
-//                        .requestMatchers(HttpMethod.POST, "/api/auth/reissue").authenticated()
-//                        .requestMatchers(HttpMethod.PUT, "/api/user/{id}").authenticated()
-//                        .requestMatchers(HttpMethod.POST, "/api/post").authenticated()
-//                        .requestMatchers(HttpMethod.PUT, "/api/post").authenticated()
-//                        .requestMatchers(HttpMethod.POST, "/api/user/email-verification").anonymous()
-                        requests.anyRequest().permitAll()
+
+                        requests
+                                .requestMatchers(HttpMethod.POST, "/api/post").authenticated()
+//                                .requestMatchers(HttpMethod.DELETE, "/api/user").authenticated()
+//                                .requestMatchers(HttpMethod.POST, "/api/auth/reissue").authenticated()
+//                                .requestMatchers(HttpMethod.PUT, "/api/user/{id}").authenticated()
+//                                .requestMatchers(HttpMethod.PUT, "/api/post").authenticated()
+//                                .requestMatchers(HttpMethod.POST, "/api/user/email-verification").anonymous()
+                                .anyRequest().permitAll()
         );
+
         http.addFilterAt(jwtAuthenticationFilter(), BasicAuthenticationFilter.class);
+
         return http.build();
     }
 }
