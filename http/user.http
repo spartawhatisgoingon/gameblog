@@ -13,7 +13,7 @@ POST http://localhost:8080/api/user
 Content-Type: application/json
 
 {
-  "email": "helloworld12@gmail.com",
+  "email": "helloworld@gmail.com",
   "name": "helloworld",
   "password": "helloWorld1234!!!"
 }
@@ -23,5 +23,5 @@ POST http://localhost:8080/api/user/email-verification
 Content-Type: application/json
 
 {
-  "token": "e536d32b-696c-4507-b16c-9fcb47d31079"
+  "token": "56f2ba3f-3a33-4f7b-bd58-371ada53b7a6"
 }

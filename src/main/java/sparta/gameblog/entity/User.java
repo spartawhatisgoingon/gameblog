@@ -3,8 +3,10 @@ package sparta.gameblog.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Builder;
-import lombok.Getter; import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Getter
@@ -67,6 +69,14 @@ public class User extends Timestamp {
         return this.statusCode == statusCode.ACTIVE;
     }
 
+    @Transactional
+    public void updateProfile(String name, String email, String introduction, String password) {
+        this.name = name;
+        this.email = email;
+        this.introduction = introduction;
+        this.password = password;
+    }
+
     public enum StatusCode {
         // 이메일 미인증
         INACTIVE,
@@ -86,7 +96,7 @@ public class User extends Timestamp {
 
         private final String authority;
 
-        public static class  Authority {
+        public static class Authority {
             public static final String NORMAL = "ROLE_NORMAL";
             public static final String ADMIN = "ROLE_ADMIN";
         }
