@@ -30,8 +30,8 @@ public class UserController {
     @PostMapping
     public ResponseEntity<?> signup(@Valid @RequestBody UserSignupRequestDto requestDto) {
         User user = this.userService.signup(requestDto);
-//        Token token = this.tokenService.createEmailValidationToken(user);
-//        smtpService.sendEmail(user.getEmail(), authEmailTitle, token.getToken().toString());
+        Token token = this.tokenService.createEmailValidationToken(user);
+        smtpService.sendEmail(user.getEmail(), authEmailTitle, token.getToken().toString());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
