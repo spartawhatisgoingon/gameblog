@@ -47,10 +47,8 @@ public class UserPrincipal implements UserDetails {
         return true;
     }
 
-    // TODO: user 의 status code 가 미인증이면, false
     @Override
     public boolean isEnabled() {
-        // return this.user.isActive();
-        return true;
+         return this.user.isActive();
     }
 }
