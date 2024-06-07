@@ -28,7 +28,8 @@ public class Post extends Timestamp {
     private Set<Comment> comments;
 
     @Builder
-    public Post(String title, String contents) {
+    public Post(String title, String contents, User user) {
+        this.user = user;
         this.title = title;
         this.contents = contents;
     }

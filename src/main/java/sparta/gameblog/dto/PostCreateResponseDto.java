@@ -13,7 +13,7 @@ public class PostCreateResponseDto {
     private Long id;
     private String title;
     private String contents;
-    private int user_id;
+    private long user_id;
     private String user_email;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
@@ -25,5 +25,6 @@ public class PostCreateResponseDto {
         this.contents = post.getContents();
         this.created_at = post.getCreatedAt();
         this.updated_at = post.getUpdatedAt();
+        this.user_id = post.getId();
     }
 }
