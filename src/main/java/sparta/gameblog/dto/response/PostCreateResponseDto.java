@@ -1,9 +1,10 @@
-package sparta.gameblog.dto;
+package sparta.gameblog.dto.response;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import sparta.gameblog.entity.Post;
+
 import java.time.LocalDateTime;
 
 @Setter
@@ -13,17 +14,19 @@ public class PostCreateResponseDto {
     private Long id;
     private String title;
     private String contents;
-    private int user_id;
-    private String user_email;
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    private long userId;
+    private String userEmail;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     // 유저 정보는 포함하지 않았습니다.
     public PostCreateResponseDto(Post post) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.contents = post.getContents();
-        this.created_at = post.getCreatedAt();
-        this.updated_at = post.getUpdatedAt();
+        this.createdAt = post.getCreatedAt();
+        this.updatedAt = post.getUpdatedAt();
+        this.userId = post.getUser().getId();
+        this.userEmail = post.getUser().getEmail();
     }
 }

@@ -4,15 +4,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import sparta.gameblog.dto.PostCreateRequestDto;
-import sparta.gameblog.dto.PostUpdateRequestDto;
-import sparta.gameblog.dto.PostUpdateResponseDto;
-import sparta.gameblog.dto.PostsResponseDto;
+import sparta.gameblog.dto.request.PostCreateRequestDto;
+import sparta.gameblog.dto.request.PostUpdateRequestDto;
+import sparta.gameblog.dto.response.PostUpdateResponseDto;
+import sparta.gameblog.dto.response.PostsResponseDto;
 import sparta.gameblog.entity.User;
-import sparta.gameblog.security.principal.UserPrincipal;
 import sparta.gameblog.service.PostService;
+import sparta.gameblog.web.config.argumentResolver.annotation.LoginUser;
 
 @RestController
 @RequestMapping("/api/post")
@@ -22,9 +21,8 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<?> createPost(@Valid @RequestBody PostCreateRequestDto requestDto, @AuthenticationPrincipal UserPrincipal userPrincipal) {
-        User currentuser = userPrincipal.getUser();
-        return ResponseEntity.status(HttpStatus.CREATED).body((postService.createPost(requestDto)));
+    public ResponseEntity<?> createPost(@Valid @RequestBody PostCreateRequestDto requestDto, @LoginUser User currentUser) {
+        return ResponseEntity.status(HttpStatus.CREATED).body((postService.createPost(requestDto, currentUser)));
     }
 
     @GetMapping("/{postId}")
@@ -43,15 +41,15 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<?> deletePost(@PathVariable Long postId) {
-        postService.deletePost(postId);
+    public ResponseEntity<?> deletePost(@PathVariable Long postId, @LoginUser User currentUser) {
+        postService.deletePost(postId, currentUser);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PutMapping("/{postId}")
     public ResponseEntity<?> updatePost(
-            @PathVariable Long postId, @Valid @RequestBody PostUpdateRequestDto requestDto) {
-        PostUpdateResponseDto response = postService.updatePost(postId, requestDto);
+            @PathVariable Long postId, @Valid @RequestBody PostUpdateRequestDto requestDto, @LoginUser User currentUser) {
+        PostUpdateResponseDto response = postService.updatePost(postId, requestDto, currentUser);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

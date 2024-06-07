@@ -44,15 +44,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Claims claims = jwtUtil.getClaimsFromAccessToken(accessToken);
         String email = claims.get(JwtUtil.CLAIM_EMAIL, String.class);
         String name = claims.get(JwtUtil.CLAIM_NAME, String.class);
-        Long id = claims.get(JwtUtil.CLAIM_ID, Long.class);
         User.Role role = User.Role.valueOf(claims.get(JwtUtil.CLAIM_ROLE, String.class));
+        Long id = claims.get(JwtUtil.CLAIM_ID, Long.class);
 
         User user = User.builder()
+                .id(id)
                 .email(email)
                 .name(name)
                 .role(role)
                 .build();
-        user.setId(id);
         UserDetails userDetails = new UserPrincipal(user);
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

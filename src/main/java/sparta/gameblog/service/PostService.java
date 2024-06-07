@@ -1,14 +1,19 @@
 package sparta.gameblog.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import sparta.gameblog.dto.*;
+import sparta.gameblog.dto.request.PostCreateRequestDto;
+import sparta.gameblog.dto.request.PostUpdateRequestDto;
+import sparta.gameblog.dto.response.PostCreateResponseDto;
+import sparta.gameblog.dto.response.PostGetResponseDto;
+import sparta.gameblog.dto.response.PostUpdateResponseDto;
+import sparta.gameblog.dto.response.PostsResponseDto;
 import sparta.gameblog.entity.Post;
+import sparta.gameblog.entity.User;
 import sparta.gameblog.exception.BusinessException;
 import sparta.gameblog.exception.ErrorCode;
 import sparta.gameblog.mapper.PostMapper;
@@ -23,8 +28,9 @@ public class PostService {
     private final PostRepository postRepository;
     private final PostMapper postMapper;
 
-    public PostCreateResponseDto createPost(PostCreateRequestDto requestDto) {
-        Post post = postMapper.toEntity(requestDto);
+    @Transactional
+    public PostCreateResponseDto createPost(PostCreateRequestDto requestDto, User currentUser) {
+        Post post = postMapper.toEntity(requestDto, currentUser);
         return new PostCreateResponseDto(postRepository.save(post));
     }
 
@@ -49,19 +55,26 @@ public class PostService {
                 .build();
     }
 
-    public void deletePost(Long postId) {
+    public void deletePost(Long postId, User currentUser) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> (new RuntimeException("postId에 맞는 게시글이 존재하지 않습니다."))
         );
+        if (!post.canUpdateBy(currentUser)) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
         postRepository.delete(post);
     }
 
-    public PostUpdateResponseDto updatePost(Long postId, PostUpdateRequestDto requestDto) {
+    @Transactional
+    public PostUpdateResponseDto updatePost(Long postId, PostUpdateRequestDto requestDto, User currentUser) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> (new BusinessException(ErrorCode.POST_NOT_FOUND))
         );
-        post.update(requestDto.getTitle(), requestDto.getContents());
-        postRepository.save(post);
+        if (!post.canUpdateBy(currentUser)) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
+
+        post.update(postMapper.toEntity(requestDto));
 
         return new PostUpdateResponseDto(post);
     }
