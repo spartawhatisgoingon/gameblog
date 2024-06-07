@@ -26,5 +26,6 @@ public class PostCreateResponseDto {
         this.created_at = post.getCreatedAt();
         this.updated_at = post.getUpdatedAt();
         this.user_id = post.getId();
+        this.user_email = post.getUser().getEmail();
     }
 }

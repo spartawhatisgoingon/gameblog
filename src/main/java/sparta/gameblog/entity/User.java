@@ -54,6 +54,11 @@ public class User extends Timestamp {
         return this.statusCode == statusCode.ACTIVE;
     }
 
+    @Transient
+    public boolean isAdmin() {
+        return this.role == Role.ADMIN;
+    }
+
     @Transactional
     public void updateProfile(String name, String introduction, String password) {
         this.name = name;

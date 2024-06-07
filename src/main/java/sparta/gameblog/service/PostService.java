@@ -50,19 +50,26 @@ public class PostService {
                 .build();
     }
 
-    public void deletePost(Long postId) {
+    public void deletePost(Long postId, User currentUser) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> (new RuntimeException("postId에 맞는 게시글이 존재하지 않습니다."))
         );
+        if (!post.canUpdateBy(currentUser)) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
         postRepository.delete(post);
     }
 
-    public PostUpdateResponseDto updatePost(Long postId, PostUpdateRequestDto requestDto) {
+    @Transactional
+    public PostUpdateResponseDto updatePost(Long postId, PostUpdateRequestDto requestDto, User currentUser) {
         Post post = postRepository.findById(postId).orElseThrow(
                 () -> (new BusinessException(ErrorCode.POST_NOT_FOUND))
         );
-        post.update(requestDto.getTitle(), requestDto.getContents());
-        postRepository.save(post);
+        if (!post.canUpdateBy(currentUser)) {
+            throw new BusinessException(ErrorCode.FORBIDDEN);
+        }
+
+        post.update(postMapper.toEntity(requestDto));
 
         return new PostUpdateResponseDto(post);
     }

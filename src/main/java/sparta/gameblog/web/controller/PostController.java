@@ -41,15 +41,15 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<?> deletePost(@PathVariable Long postId) {
-        postService.deletePost(postId);
+    public ResponseEntity<?> deletePost(@PathVariable Long postId, @LoginUser User currentUser) {
+        postService.deletePost(postId, currentUser);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PutMapping("/{postId}")
     public ResponseEntity<?> updatePost(
-            @PathVariable Long postId, @Valid @RequestBody PostUpdateRequestDto requestDto) {
-        PostUpdateResponseDto response = postService.updatePost(postId, requestDto);
+            @PathVariable Long postId, @Valid @RequestBody PostUpdateRequestDto requestDto, @LoginUser User currentUser) {
+        PostUpdateResponseDto response = postService.updatePost(postId, requestDto, currentUser);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 

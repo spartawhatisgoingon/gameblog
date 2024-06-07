@@ -39,9 +39,19 @@ public class Post extends Timestamp {
         this.contents = contents;
     }
 
+    public void update(Post post) {
+        this.title = post.title;
+        this.contents = post.contents;
+    }
+
+
     @Transactional
     public void addComment(Comment comment) {
         this.comments.add(comment);
         comment.setPost(this);
+    }
+
+    public boolean canUpdateBy(User user) {
+        return this.user.getId() == user.getId() || user.isAdmin();
     }
 }
