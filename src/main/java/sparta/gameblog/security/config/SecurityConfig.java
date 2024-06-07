@@ -11,6 +11,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import sparta.gameblog.jwt.JwtUtil;
 import sparta.gameblog.security.filter.JwtAuthenticationFilter;
 
@@ -70,9 +71,9 @@ public class SecurityConfig {
 //                        .requestMatchers(HttpMethod.POST, "/api/post").authenticated()
 //                        .requestMatchers(HttpMethod.PUT, "/api/post").authenticated()
 //                        .requestMatchers(HttpMethod.POST, "/api/user/email-verification").anonymous()
-                        requests.anyRequest().anonymous()
+                        requests.anyRequest().permitAll()
         );
-
+        http.addFilterAt(jwtAuthenticationFilter(), BasicAuthenticationFilter.class);
         return http.build();
     }
 }

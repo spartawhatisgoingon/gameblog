@@ -20,6 +20,11 @@ public class User extends Timestamp {
     @Column(name = "user_id")
     private long id;
 
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     @Column(nullable = false)
     private String password;
 
@@ -53,7 +58,8 @@ public class User extends Timestamp {
     }
 
     @Builder
-    public User(String name, String email, Role role) {
+    public User(Long id, String name, String email, Role role) {
+        this.id = id;
         this.name = name;
         this.email = email;
         this.role = role;
