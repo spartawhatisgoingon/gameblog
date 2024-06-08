@@ -36,7 +36,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String accessToken = jwtUtil.getJwtFromHeader(request);
 
         // token 이 없으면 생략하고 진행
-        if (accessToken == null) {
+        if (accessToken == null || !jwtUtil.validateToken(accessToken, request)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -44,15 +44,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Claims claims = jwtUtil.getClaimsFromAccessToken(accessToken);
         String email = claims.get(JwtUtil.CLAIM_EMAIL, String.class);
         String name = claims.get(JwtUtil.CLAIM_NAME, String.class);
+        User.StatusCode statusCode = User.StatusCode.valueOf(claims.get(JwtUtil.CLAIM_STATUS_CODE, String.class));
         Long id = claims.get(JwtUtil.CLAIM_ID, Long.class);
         User.Role role = User.Role.valueOf(claims.get(JwtUtil.CLAIM_ROLE, String.class));
 
         User user = User.builder()
+                .id(id)
                 .email(email)
                 .name(name)
                 .role(role)
+                .statusCode(statusCode)
                 .build();
-        user.setId(id);
         UserDetails userDetails = new UserPrincipal(user);
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

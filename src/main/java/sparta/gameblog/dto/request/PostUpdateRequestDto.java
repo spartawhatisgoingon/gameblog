@@ -1,4 +1,4 @@
-package sparta.gameblog.dto;
+package sparta.gameblog.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

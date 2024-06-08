@@ -1,11 +1,11 @@
 package sparta.gameblog.security.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -17,21 +17,27 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import sparta.gameblog.jwt.JwtUtil;
-import sparta.gameblog.security.exception.AuthenticationEntryPointImpl;
+import sparta.gameblog.oauth.OAuth2ScueesHandler;
 import sparta.gameblog.security.exception.AccessDeniedHandlerImpl;
+import sparta.gameblog.security.exception.AuthenticationEntryPointImpl;
 import sparta.gameblog.security.filter.JwtAuthenticationFilter;
-import sparta.gameblog.security.service.PrincipalOauth2UserService;
+import sparta.gameblog.security.service.PrincipalOAuth2UserService;
 
 
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtUtil jwtUtil;
-    private final PrincipalOauth2UserService principalOauth2UserService;
+    private final PrincipalOAuth2UserService principalOAuth2UserService;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public OAuth2ScueesHandler oauth2ScueesHandler() {
+        return new OAuth2ScueesHandler(jwtUtil, new ObjectMapper());
     }
 
     @Bean
@@ -79,11 +85,8 @@ public class SecurityConfig {
 
                         requests
                                 .requestMatchers(HttpMethod.POST, "/api/post").authenticated()
-//                                .requestMatchers(HttpMethod.DELETE, "/api/user").authenticated()
-//                                .requestMatchers(HttpMethod.POST, "/api/auth/reissue").authenticated()
-//                                .requestMatchers(HttpMethod.PUT, "/api/user/{id}").authenticated()
-//                                .requestMatchers(HttpMethod.PUT, "/api/post").authenticated()
-//                                .requestMatchers(HttpMethod.POST, "/api/user/email-verification").anonymous()
+                                .requestMatchers(HttpMethod.DELETE, "/api/post").authenticated()
+                                .requestMatchers(HttpMethod.PUT, "/api/post").authenticated()
                                 .anyRequest().permitAll()
         );
 
@@ -92,9 +95,9 @@ public class SecurityConfig {
 
         http.oauth2Login(httpSecurityOAuth2LoginConfigurer -> httpSecurityOAuth2LoginConfigurer
                 .loginPage("/login.html")
-                .defaultSuccessUrl("/hellowrodl")
-                .userInfoEndpoint()
-                .userService(principalOauth2UserService)
+                .defaultSuccessUrl("/hellowrodl") // 리다이렉트 되면 토큰 발급 예정
+                .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(principalOAuth2UserService))
+                .successHandler(oauth2ScueesHandler())
             );
 
         return http.build();

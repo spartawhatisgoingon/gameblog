@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import sparta.gameblog.dto.UserSignupRequestDto;
+import sparta.gameblog.dto.request.UserSignupRequestDto;
 import sparta.gameblog.entity.Token;
 import sparta.gameblog.entity.User;
 import sparta.gameblog.service.TokenService;

@@ -1,13 +1,13 @@
-package sparta.gameblog.dto;
+package sparta.gameblog.dto.response;
 
 import lombok.Getter;
 import sparta.gameblog.entity.User;
 
 @Getter
 public class ProfileResponseDto {
-    private String email;
-    private String name;
-    private String introduction;
+    private final String email;
+    private final String name;
+    private final String introduction;
 
     public ProfileResponseDto(User user) {
         this.email = user.getEmail();

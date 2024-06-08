@@ -6,11 +6,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
-import sparta.gameblog.dto.NaverProfileResponseDto;
-import sparta.gameblog.dto.NaverTokenResponseDto;
+import sparta.gameblog.dto.response.NaverProfileResponseDto;
+import sparta.gameblog.dto.response.NaverTokenResponseDto;
 import sparta.gameblog.jwt.JwtUtil;
 import sparta.gameblog.oauth.config.NaverProperties;
-import sparta.gameblog.oauth.config.UrlGenerator;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -18,11 +17,10 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class NaverOauthService implements UrlGenerator {
+public class NaverOauthService {
     private final NaverProperties naverProperties;
     private final JwtUtil jwtUtil;
 
-    @Override
     public String generateUrl() throws UnsupportedEncodingException {
         // state 는 랜덤값 생성. 지금은 사용하지말자 UUID -> 8글자 잘라서 state에 넣기
 
