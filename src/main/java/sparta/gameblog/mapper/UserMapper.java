@@ -16,8 +16,8 @@ public class UserMapper {
                 .name(requestDto.getName())
                 .email(requestDto.getEmail())
                 .password(passwordEncoder.encode(requestDto.getPassword()))
-                .statusCode(User.StatusCode.INACTIVE)
-                .role(User.Role.NORMAL)
+                .statusCode(requestDto.getStatusCode())
+                .role(requestDto.getRole())
                 .build();
     }
 }
