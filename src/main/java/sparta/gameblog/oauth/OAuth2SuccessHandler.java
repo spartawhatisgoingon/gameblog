@@ -12,7 +12,7 @@ import sparta.gameblog.security.principal.UserPrincipal;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class OAuth2ScueesHandler implements org.springframework.security.web.authentication.AuthenticationSuccessHandler {
+public class OAuth2SuccessHandler implements org.springframework.security.web.authentication.AuthenticationSuccessHandler {
     private final JwtUtil jwtUtil;
     private final ObjectMapper objectMapper;
 

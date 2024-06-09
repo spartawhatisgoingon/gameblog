@@ -16,10 +16,6 @@ public class TokenService {
     @Value("${auth-code-expiration-seconds}")
     private int authCodeExpirationSeconds;
 
-
-//    @Qualifier("emailTokenExpirationSeconds")
-//    private final int emailTokenExpirationSeconds;
-
     public Token createEmailValidationToken(User user) {
         Token token = Token.builder()
                 .type(Token.Type.EMAIL_VALIDATION_TOKEN)
