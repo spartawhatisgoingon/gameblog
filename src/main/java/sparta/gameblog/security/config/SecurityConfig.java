@@ -1,5 +1,6 @@
 package sparta.gameblog.security.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,35 +10,27 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import sparta.gameblog.jwt.JwtUtil;
-import sparta.gameblog.security.exception.AuthenticationEntryPointImpl;
+import sparta.gameblog.oauth.OAuth2SuccessHandler;
 import sparta.gameblog.security.exception.AccessDeniedHandlerImpl;
+import sparta.gameblog.security.exception.AuthenticationEntryPointImpl;
 import sparta.gameblog.security.filter.JwtAuthenticationFilter;
+import sparta.gameblog.security.service.OAuth2UserServiceImpl;
 
 
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-    // 1. security
-    // 2. password -> encrypt
-    // 3. security 기본으로 제공하는 로그인 방법
-    //   - form login -> api -> login controller -> access token
-    //   - basic -> Authorization: Bearer jwtotken ->
-    //s
-
-    // 1. access token 발급 -> 컨트롤러
-    // 2. 매 요청마다 header 를 확인해서 로그인 정보를 확인해야한다. -> filter
     private final JwtUtil jwtUtil;
+    private final OAuth2UserServiceImpl OAuth2UserServiceImpl;
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public OAuth2SuccessHandler oauth2SuccessHandler() {
+        return new OAuth2SuccessHandler(jwtUtil, new ObjectMapper());
     }
 
     @Bean
@@ -77,20 +70,27 @@ public class SecurityConfig {
         // 1. 로그인 아이디 / 패스워드 틀렸을 때 예외 401
         // 2. 보안레벨 맞지 않을 때 예외 403
         http.exceptionHandling(e -> e
-                .accessDeniedHandler(accessDeniedHandler()) // 401
-                .authenticationEntryPoint(authenticationEntryPoint()) // 403
+                .authenticationEntryPoint(authenticationEntryPoint()) // 401
+                .accessDeniedHandler(accessDeniedHandler()) // 403
         );
 
         http.authorizeHttpRequests(requests ->
 
-                        requests
-                                .requestMatchers(HttpMethod.POST, "/api/post").authenticated()
-                                .requestMatchers(HttpMethod.DELETE, "/api/post").authenticated()
-                                .requestMatchers(HttpMethod.PUT, "/api/post").authenticated()
-                                .anyRequest().permitAll()
+                requests
+                        .requestMatchers(HttpMethod.POST, "/api/post").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/post").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/post").authenticated()
+                        .anyRequest().permitAll()
         );
 
         http.addFilterAt(jwtAuthenticationFilter(), BasicAuthenticationFilter.class);
+
+        http.oauth2Login(httpSecurityOAuth2LoginConfigurer -> httpSecurityOAuth2LoginConfigurer
+                .loginPage("/login.html")
+                .defaultSuccessUrl("/hellowrodl") // 리다이렉트 되면 토큰 발급 예정
+                .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig.userService(OAuth2UserServiceImpl))
+                .successHandler(oauth2SuccessHandler())
+        );
 
         return http.build();
     }

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import sparta.gameblog.entity.User;
 
 @Getter
 @Setter
@@ -24,5 +25,7 @@ public class UserSignupRequestDto {
     @NotBlank
     private String name;
 
+    private User.Role role = User.Role.NORMAL;
 
+    private User.StatusCode statusCode = User.StatusCode.INACTIVE;
 }

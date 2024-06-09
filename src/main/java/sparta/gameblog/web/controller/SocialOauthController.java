@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sparta.gameblog.dto.LoginTokenDto;
+import sparta.gameblog.dto.UserLoginDto;
 import sparta.gameblog.dto.response.NaverProfileResponseDto;
 import sparta.gameblog.oauth.NaverOauthService;
 import sparta.gameblog.oauth.NaverUserService;
