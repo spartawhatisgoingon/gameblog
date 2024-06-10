@@ -1,0 +1,4 @@
+### 댓글 삭제
+DELETE http://localhost:8080/api/comment/{{comment_id}}
+Content-Type: application/json
+Authorization: Bearer {{access_token}}

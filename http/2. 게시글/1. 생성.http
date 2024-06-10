@@ -1,0 +1,35 @@
+## variables
+@email1 = helloworld@gmail.com
+@email2 = foobar@gmail.com
+@name = test
+@password = helloWorld1234!!!
+
+### helloworld 유저 로그인
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "{{email1}}",
+  "password": "{{password}}"
+}
+> {%
+    client.global.set("access_token", response.body.accessToken);
+    client.global.set("refresh_token", response.body.refreshToken);
+%}
+
+### 게시글 생성
+POST http://localhost:8080/api/post
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "title": "hello",
+  "contents": "this is contents"
+}
+
+> {%
+    client.global.set("post_id", response.body.id);
+%}
+
+### 생성 된 게시물 조회
+GET http://localhost:8080/api/post/{{post_id}}

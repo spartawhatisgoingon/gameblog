@@ -1,0 +1,21 @@
+###
+GET http://localhost:8080/api/post
+
+### 0페이지
+GET http://localhost:8080/api/post?page=0
+
+### 1페이지
+GET http://localhost:8080/api/post?page=1
+
+### title helloworld 게시글 생성 후 검색
+POST http://localhost:8080/api/post
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "title": "helloworld",
+  "contents": "this is contents"
+}
+
+### 검색
+GET http://localhost:8080/api/post?page=0&search=helloworld

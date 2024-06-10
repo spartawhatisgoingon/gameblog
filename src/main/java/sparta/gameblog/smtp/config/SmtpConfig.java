@@ -51,7 +51,6 @@ public class SmtpConfig {
         return authEmailTitle;
     }
 
-
     @Bean
     public JavaMailSender javaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
