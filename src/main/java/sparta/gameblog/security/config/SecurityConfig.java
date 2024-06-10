@@ -77,9 +77,10 @@ public class SecurityConfig {
         http.authorizeHttpRequests(requests ->
 
                 requests
-                        .requestMatchers(HttpMethod.POST, "/api/post").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/api/post").authenticated()
-                        .requestMatchers(HttpMethod.PUT, "/api/post").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/post/**").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/api/post/**").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/post/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/post/following/**").authenticated()
                         .anyRequest().permitAll()
         );
 
