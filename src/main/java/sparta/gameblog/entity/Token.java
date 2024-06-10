@@ -32,7 +32,7 @@ public class Token {
 
 
     @Builder
-    public Token(Type type, User user, int tokenExpirationSeconds ) {
+    public Token(Type type, User user, long tokenExpirationSeconds ) {
         this.expiredAt = LocalDateTime.now().plusSeconds(tokenExpirationSeconds);
         this.token = UUID.randomUUID();
         this.type = type;
