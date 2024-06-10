@@ -41,4 +41,11 @@ public class Comment extends Timestamp {
     public void setPost(Post post) {
         this.post = post;
     }
+
+
+    public void update(Comment comment) {
+        if (comment.getComment() != null) {
+            this.comment = comment.getComment();
+        }
+    }
 }

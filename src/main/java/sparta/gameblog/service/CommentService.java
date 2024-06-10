@@ -33,5 +33,31 @@ public class CommentService {
         this.commentRepository.save(comment);
         return commentMapper.toCommentCreateResponseDto(commentRepository.save(comment));
     }
+
+    public CommentCreateResponseDto getComment(Long commentId) {
+        Comment comment = getCommentById(commentId);
+        return commentMapper.toCommentCreateResponseDto(comment);
+    }
+
+    @Transactional
+    public CommentCreateResponseDto updateComment(Long commentId, CommentCreateRequestDto requestDto, User currentUser) {
+        Comment comment = getCommentById(commentId);
+        Comment updatedComment = commentMapper.toEntity(requestDto, currentUser);
+        comment.update(updatedComment);
+        commentRepository.save(comment);
+        return commentMapper.toCommentCreateResponseDto(comment);
+    }
+
+    @Transactional
+    public void deleteComment(Long commentId) {
+        Comment comment = getCommentById(commentId);
+        commentRepository.delete(comment);
+    }
+
+    private Comment getCommentById(Long commentId) {
+        return commentRepository.findById(commentId).orElseThrow(
+                () -> new BusinessException(ErrorCode.POST_NOT_FOUND)
+        );
+    }
 }
 
