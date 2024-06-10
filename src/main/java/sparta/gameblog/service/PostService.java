@@ -5,8 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import sparta.gameblog.constants.SortType;
 import sparta.gameblog.dto.request.PostCreateRequestDto;
+import sparta.gameblog.dto.request.PostPageableRequestDto;
 import sparta.gameblog.dto.request.PostUpdateRequestDto;
 import sparta.gameblog.dto.response.PostCreateResponseDto;
 import sparta.gameblog.dto.response.PostGetResponseDto;
@@ -19,6 +22,10 @@ import sparta.gameblog.exception.ErrorCode;
 import sparta.gameblog.mapper.PostMapper;
 import sparta.gameblog.repository.PostRepository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -41,16 +48,23 @@ public class PostService {
         return new PostGetResponseDto(post);
     }
 
-    public PostsResponseDto getPosts(int page) {
-        Pageable pageable = PageRequest.of(page, 10);
-        Page<Post> posts = postRepository.findAll(pageable);
+    public PostsResponseDto getPosts(PostPageableRequestDto requestDto) {
+        SortType sortType = SortType.fromColumn(requestDto.getSort());
+        Sort sort = Sort.by(sortType.getColumn());
+        Pageable pageable = PageRequest.of(requestDto.getPage(), 10, sort);
+
+        String search = requestDto.getSearch() != null ? requestDto.getSearch() : "";
+        LocalDateTime startDate = requestDto.getStartDate() != null ?
+                requestDto.getStartDate().atStartOfDay() : LocalDateTime.of(1960, 1, 1, 0, 0);
+        LocalDateTime endDate = requestDto.getEndDate() != null ?
+                requestDto.getEndDate().atTime(LocalTime.MAX) : LocalDateTime.of(2111, 1, 1, 0, 0);
+        Page<Post> posts = postRepository.findByTitleContainingAndCreatedAtBetween(search, startDate, endDate, pageable);
+
         List<PostGetResponseDto> postGetResponseDtoList = posts.map(PostGetResponseDto::new).getContent();
 
-        if(posts.getTotalElements() > 0 && postGetResponseDtoList.isEmpty()) {
-            throw new BusinessException(ErrorCode.POST_NOT_FOUND);
-        }
-
-        return PostsResponseDto.builder().page(page)
+        return PostsResponseDto.builder()
+                .totalElements(posts.getTotalElements())
+                .page(requestDto.getPage())
                 .data(postGetResponseDtoList)
                 .build();
     }
