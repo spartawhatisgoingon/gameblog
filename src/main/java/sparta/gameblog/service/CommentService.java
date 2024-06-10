@@ -44,7 +44,6 @@ public class CommentService {
         Comment comment = getCommentById(commentId);
         Comment updatedComment = commentMapper.toEntity(requestDto, currentUser);
         comment.update(updatedComment);
-        commentRepository.save(comment);
         return commentMapper.toCommentCreateResponseDto(comment);
     }
 
@@ -56,7 +55,7 @@ public class CommentService {
 
     private Comment getCommentById(Long commentId) {
         return commentRepository.findById(commentId).orElseThrow(
-                () -> new BusinessException(ErrorCode.POST_NOT_FOUND)
+                () -> new BusinessException(ErrorCode.COMMENT_NOT_FOUND)
         );
     }
 }
