@@ -52,6 +52,13 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);
     }
 
+    @GetMapping("/following")
+    public ResponseEntity<?> getFollowingPosts(PostPageableRequestDto requestDto, @LoginUser User currentUser) {
+        PostsResponseDto responseDto = postService.getFollowingPosts(requestDto, currentUser);
+
+        return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+    }
+
     @DeleteMapping("/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable Long postId, @LoginUser User currentUser) {
         postService.deletePost(postId, currentUser);

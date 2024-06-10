@@ -1,6 +1,7 @@
 package sparta.gameblog.service;
 
 import jakarta.transaction.Transactional;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,10 +23,8 @@ import sparta.gameblog.exception.ErrorCode;
 import sparta.gameblog.mapper.PostMapper;
 import sparta.gameblog.repository.PostRepository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -34,6 +33,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final PostMapper postMapper;
+    private final FollowService followService;
 
     @Transactional
     public PostCreateResponseDto createPost(PostCreateRequestDto requestDto, User currentUser) {
@@ -49,16 +49,33 @@ public class PostService {
     }
 
     public PostsResponseDto getPosts(PostPageableRequestDto requestDto) {
-        SortType sortType = SortType.fromColumn(requestDto.getSort());
-        Sort sort = Sort.by(sortType.getColumn());
-        Pageable pageable = PageRequest.of(requestDto.getPage(), 10, sort);
+        PostQueryParams queryParams = new PostQueryParams(requestDto);
 
-        String search = requestDto.getSearch() != null ? requestDto.getSearch() : "";
-        LocalDateTime startDate = requestDto.getStartDate() != null ?
-                requestDto.getStartDate().atStartOfDay() : LocalDateTime.of(1960, 1, 1, 0, 0);
-        LocalDateTime endDate = requestDto.getEndDate() != null ?
-                requestDto.getEndDate().atTime(LocalTime.MAX) : LocalDateTime.of(2111, 1, 1, 0, 0);
-        Page<Post> posts = postRepository.findByTitleContainingAndCreatedAtBetween(search, startDate, endDate, pageable);
+        Page<Post> posts = postRepository.findByTitleContainingAndCreatedAtBetween(
+                queryParams.getSearch(),
+                queryParams.getStartDate(),
+                queryParams.getEndDate(),
+                queryParams.getPageable());
+
+        List<PostGetResponseDto> postGetResponseDtoList = posts.map(PostGetResponseDto::new).getContent();
+
+        return PostsResponseDto.builder()
+                .totalElements(posts.getTotalElements())
+                .page(requestDto.getPage())
+                .data(postGetResponseDtoList)
+                .build();
+    }
+
+    public PostsResponseDto getFollowingPosts(PostPageableRequestDto requestDto, User currentUser) {
+        PostQueryParams queryParams = new PostQueryParams(requestDto);
+
+        List<User> followings = followService.getFollowings(currentUser);
+        Page<Post> posts = postRepository.findByTitleContainingAndCreatedAtBetweenAndUserIn(
+                queryParams.getSearch(),
+                queryParams.getStartDate(),
+                queryParams.getEndDate(),
+                followings,
+                queryParams.getPageable());
 
         List<PostGetResponseDto> postGetResponseDtoList = posts.map(PostGetResponseDto::new).getContent();
 
@@ -91,5 +108,25 @@ public class PostService {
         post.update(postMapper.toEntity(requestDto));
 
         return new PostUpdateResponseDto(post);
+    }
+
+    @Getter
+    private static class PostQueryParams {
+        private final Pageable pageable;
+        private final String search;
+        private final LocalDateTime startDate;
+        private final LocalDateTime endDate;
+
+        public PostQueryParams(PostPageableRequestDto requestDto) {
+            SortType sortType = SortType.fromColumn(requestDto.getSort());
+            Sort sort = Sort.by(sortType.getColumn());
+            pageable = PageRequest.of(requestDto.getPage(), 10, sort);
+
+            search = requestDto.getSearch() != null ? requestDto.getSearch() : "";
+            startDate = requestDto.getStartDate() != null ?
+                    requestDto.getStartDate().atStartOfDay() : LocalDateTime.of(1960, 1, 1, 0, 0);
+            endDate = requestDto.getEndDate() != null ?
+                    requestDto.getEndDate().atTime(LocalTime.MAX) : LocalDateTime.of(2111, 1, 1, 0, 0);
+        }
     }
 }

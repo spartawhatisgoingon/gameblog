@@ -42,6 +42,10 @@ public class FollowService {
         followRepository.delete(follow);
     }
 
+    public List<User> getFollowings(User currentUser) {
+        return followRepository.findAllByFollowerUserId(currentUser.getId()).stream().map(Follow::getFollowingUser).toList();
+    }
+
     public List<User> getFollowers(User currentUser) {
         return followRepository.findAllByFollowingUserId(currentUser.getId()).stream().map(Follow::getFollowerUser).toList();
     }
