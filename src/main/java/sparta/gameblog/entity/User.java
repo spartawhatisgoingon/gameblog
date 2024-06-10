@@ -31,11 +31,11 @@ public class User extends Timestamp {
     private String introduction;
 
     @Column(nullable = false)
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private StatusCode statusCode;
 
     @Column(nullable = false)
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private Role role; // 0: normal, 1: admin
 
     /*
