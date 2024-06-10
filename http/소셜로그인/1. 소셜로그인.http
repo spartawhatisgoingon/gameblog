@@ -1,0 +1,12 @@
+### localhost:8080/login.html 접속
+### 로그인 & 소셜 로그인
+
+### 게시글 생성 테스트
+POST http://localhost:8080/api/post
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzaW1pYW4xMTRAZ21haWwuY29tIiwiZXhwIjoxNzE4MDE5NjgyLCJpYXQiOjE3MTgwMTc4ODIsImlkIjozLCJlbWFpbCI6InNpbWlhbjExNEBnbWFpbC5jb20iLCJyb2xlIjoiTk9STUFMIiwibmFtZSI6IuuCqOyDge2YgSIsInN0YXR1c19jb2RlIjoiQUNUSVZFIn0.rrqWDIX_c2fPSGc2tl4QEs4seY7GH5p6OkzqgM20uEM
+
+{
+  "title": "social login post create",
+  "contents": "this is contents"
+}

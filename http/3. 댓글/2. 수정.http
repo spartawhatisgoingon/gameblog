@@ -1,0 +1,8 @@
+### 댓글 수정
+PUT http://localhost:8080/api/comment/{{comment_id}}
+Content-Type: application/json
+Authorization: Bearer {{access_token}}
+
+{
+  "comment": "updated comment"
+}
