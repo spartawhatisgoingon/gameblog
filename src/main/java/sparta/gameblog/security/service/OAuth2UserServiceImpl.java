@@ -20,12 +20,10 @@ import java.util.UUID;
 
 @Service
 public class OAuth2UserServiceImpl extends DefaultOAuth2UserService {
-    private final UserRepository userRepository;
     private final List<OAuth2UserInfo> oAuth2UserInfoList;
     private final UserService userService;
 
-    public OAuth2UserServiceImpl(UserRepository userRepository, UserService userService) {
-        this.userRepository = userRepository;
+    public OAuth2UserServiceImpl(UserService userService) {
         this.userService = userService;
         this.oAuth2UserInfoList = List.of(new NaverOAuth2UserInfo(), new GoogleOAuth2UserInfo());
     }
@@ -44,8 +42,14 @@ public class OAuth2UserServiceImpl extends DefaultOAuth2UserService {
 
         User user;
         try {
-            user = this.userRepository.findByEmail(oAuth2UserInfo.getEmailFromAttributes(oAuth2User.getAttributes()))
-                    .orElseThrow(() -> new RuntimeException("user 없음"));
+            user = this.userService.getUserByEmailWithSnsInfo(
+                    oAuth2UserInfo.getEmailFromAttributes(oAuth2User.getAttributes()),
+                    () -> new OAuth2AuthenticationException("존재하지 않는 유저")
+            );
+
+            if (user.getSnsInfo() == null) {
+                this.userService.addSnsInfoToUser(user, providerId);
+            }
         } catch (Exception e) {
             UserSignupRequestDto userSignupRequestDto = new UserSignupRequestDto();
             userSignupRequestDto.setEmail(oAuth2UserInfo.getEmailFromAttributes(oAuth2User.getAttributes()));

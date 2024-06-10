@@ -6,14 +6,29 @@ import org.springframework.transaction.annotation.Transactional;
 import sparta.gameblog.dto.request.UserSignupRequestDto;
 import sparta.gameblog.entity.SnsInfo;
 import sparta.gameblog.entity.User;
+import sparta.gameblog.exception.BusinessException;
+import sparta.gameblog.exception.ErrorCode;
 import sparta.gameblog.mapper.UserMapper;
 import sparta.gameblog.repository.UserRepository;
+
+import java.util.function.Supplier;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+
+    public User getUserByEmailWithSnsInfo(String email) {
+        return this.userRepository.findByEmailWithSnsInfo(email).orElseThrow(
+                () -> new BusinessException(ErrorCode.USER_NOT_FOUND)
+        );
+    }
+
+    public User getUserByEmailWithSnsInfo(String email, Supplier<? extends RuntimeException> exceptionSupplier) {
+        return this.userRepository.findByEmailWithSnsInfo(email).orElseThrow(exceptionSupplier);
+    }
+
 
     public User signup(UserSignupRequestDto requestDto) {
         User user = this.userMapper.toEntity(requestDto);
@@ -38,5 +53,13 @@ public class UserService {
     @Transactional
     public void verify(User user) {
         user.verify();
+    }
+
+    @Transactional
+    public void addSnsInfoToUser(User user, String snsType) {
+        SnsInfo.SnsType type = SnsInfo.SnsType.valueOf(snsType);
+        SnsInfo snsInfo = new SnsInfo(type);
+        user.setSnsInfo(snsInfo);
+        this.userRepository.save(user);
     }
 }
