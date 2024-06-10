@@ -29,11 +29,11 @@ public class JwtUtil {
     private static final String AUTHORIZATION_TYPE = "Bearer";
 
     @Value("${jwt.access-expire-time}")
-    private int accessExpirationTime;
+    private long accessExpirationTime;
 
     @Getter
     @Value("${jwt.refresh-expire-time}")
-    private int refreshExpirationTime;
+    private long refreshExpirationTime;
 
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
