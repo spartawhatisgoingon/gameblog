@@ -8,11 +8,16 @@ import org.springframework.web.bind.annotation.*;
 import sparta.gameblog.dto.request.PostCreateRequestDto;
 import sparta.gameblog.dto.request.PostPageableRequestDto;
 import sparta.gameblog.dto.request.PostUpdateRequestDto;
+import sparta.gameblog.dto.response.PostCreateResponseDto;
 import sparta.gameblog.dto.response.PostUpdateResponseDto;
 import sparta.gameblog.dto.response.PostsResponseDto;
 import sparta.gameblog.entity.User;
+import sparta.gameblog.service.FollowService;
 import sparta.gameblog.service.PostService;
+import sparta.gameblog.smtp.service.SmtpService;
 import sparta.gameblog.web.config.argumentResolver.annotation.LoginUser;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/post")
@@ -20,10 +25,16 @@ import sparta.gameblog.web.config.argumentResolver.annotation.LoginUser;
 public class PostController {
 
     private final PostService postService;
+    private final FollowService followService;
+    private final SmtpService smtpService;
 
     @PostMapping
     public ResponseEntity<?> createPost(@Valid @RequestBody PostCreateRequestDto requestDto, @LoginUser User currentUser) {
-        return ResponseEntity.status(HttpStatus.CREATED).body((postService.createPost(requestDto, currentUser)));
+        PostCreateResponseDto responseDto = postService.createPost(requestDto, currentUser);
+        for(User user : followService.getFollowers(currentUser)) {
+            smtpService.sendEmail(user.getEmail(), user.getName() +": " + requestDto.getTitle(), responseDto.getContents());
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
     }
 
     @GetMapping("/{postId}")
