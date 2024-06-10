@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sparta.gameblog.dto.request.PostCreateRequestDto;
+import sparta.gameblog.dto.request.PostPageableRequestDto;
 import sparta.gameblog.dto.request.PostUpdateRequestDto;
 import sparta.gameblog.dto.response.PostUpdateResponseDto;
 import sparta.gameblog.dto.response.PostsResponseDto;
@@ -31,14 +32,10 @@ public class PostController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getPosts(@RequestParam int page,
-                                      @RequestParam(required = false) String sort,
-                                      @RequestParam(required = false) String search,
-                                      @RequestParam(required = false) String start,
-                                      @RequestParam(required = false) String end) {
-        PostsResponseDto responseDto = postService.getPosts(page, sort, search, start, end);
+    public ResponseEntity<?> getPosts(PostPageableRequestDto requestDto) {
+        PostsResponseDto responseDto = postService.getPosts(requestDto);
 
-        if (responseDto.getData().isEmpty())
+        if (responseDto.getTotalElements() == 0)
             return ResponseEntity.status(HttpStatus.OK).body("먼저 작성하여 소식을 알려보세요!");
 
         return ResponseEntity.status(HttpStatus.OK).body(responseDto);

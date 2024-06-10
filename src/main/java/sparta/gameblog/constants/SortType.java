@@ -1,4 +1,4 @@
-package sparta.gameblog;
+package sparta.gameblog.constants;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

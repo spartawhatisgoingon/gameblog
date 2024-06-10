@@ -21,7 +21,10 @@ Content-Type: application/json
 GET http://localhost:8080/api/post/12
 
 ### 게시물 리스트 조회
-GET http://localhost:8080/api/post?page=1
+GET http://localhost:8080/api/post?page=1&startDate=1999-08-04&endDate=2100-08-04
+
+### 게시물 리스트 조회2
+GET http://localhost:8080/api/post?page=0
 
 ### 업데이트
 PUT http://localhost:8080/api/post/13
@@ -34,5 +37,5 @@ Content-Type: application/json
 }
 
 ### 삭제
-DELETE http://localhost:8080/api/post/13
+DELETE http://localhost:8080/api/post/2
 Authorization: Bearer {{access_token}}

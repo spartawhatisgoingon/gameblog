@@ -7,9 +7,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import sparta.gameblog.SortType;
-import sparta.gameblog.dto.*;
+import sparta.gameblog.constants.SortType;
 import sparta.gameblog.dto.request.PostCreateRequestDto;
+import sparta.gameblog.dto.request.PostPageableRequestDto;
 import sparta.gameblog.dto.request.PostUpdateRequestDto;
 import sparta.gameblog.dto.response.PostCreateResponseDto;
 import sparta.gameblog.dto.response.PostGetResponseDto;
@@ -48,25 +48,23 @@ public class PostService {
         return new PostGetResponseDto(post);
     }
 
-    public PostsResponseDto getPosts(int page, String sortTypeStr, String search, String start, String end) {
-        SortType sortType = SortType.fromColumn(sortTypeStr);
+    public PostsResponseDto getPosts(PostPageableRequestDto requestDto) {
+        SortType sortType = SortType.fromColumn(requestDto.getSort());
         Sort sort = Sort.by(sortType.getColumn());
-        Pageable pageable = PageRequest.of(page, 10, sort);
+        Pageable pageable = PageRequest.of(requestDto.getPage(), 10, sort);
 
-        search = search != null ? search : "";
-        LocalDateTime startDate = start != null ?
-                LocalDate.parse(start, DateTimeFormatter.ISO_DATE_TIME).atStartOfDay() : LocalDateTime.MIN;
-        LocalDateTime endDate = end != null ?
-                LocalDate.parse(end, DateTimeFormatter.ISO_DATE_TIME).atTime(LocalTime.MAX) : LocalDateTime.MAX;
+        String search = requestDto.getSearch() != null ? requestDto.getSearch() : "";
+        LocalDateTime startDate = requestDto.getStartDate() != null ?
+                requestDto.getStartDate().atStartOfDay() : LocalDateTime.of(1960, 1, 1, 0, 0);
+        LocalDateTime endDate = requestDto.getEndDate() != null ?
+                requestDto.getEndDate().atTime(LocalTime.MAX) : LocalDateTime.of(2111, 1, 1, 0, 0);
         Page<Post> posts = postRepository.findByTitleContainingAndCreatedAtBetween(search, startDate, endDate, pageable);
 
         List<PostGetResponseDto> postGetResponseDtoList = posts.map(PostGetResponseDto::new).getContent();
 
-        if(posts.getTotalElements() > 0 && postGetResponseDtoList.isEmpty()) {
-            throw new BusinessException(ErrorCode.POST_NOT_FOUND);
-        }
-
-        return PostsResponseDto.builder().page(page)
+        return PostsResponseDto.builder()
+                .totalElements(posts.getTotalElements())
+                .page(requestDto.getPage())
                 .data(postGetResponseDtoList)
                 .build();
     }
