@@ -9,7 +9,7 @@ app:
             redirecturl: ${SOCIAL_NAVER_REDIRECT_URL}
             tokenurl: https://nid.naver.com/oauth2.0/token
 auth-code-expiration-seconds: 180
-auth-email-title: '"gameblog ???? ?? ????"'
+auth-email-title: 'gameblog signup request'
 jwt:
     key: ${JWT_SECRET_KEY}
     access-expire-time: ${ACCESS_EXPIRE_TIME}

@@ -8,7 +8,6 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class PostPageableRequestDto {
-
     private int page;
     private String sort;
     private String search;

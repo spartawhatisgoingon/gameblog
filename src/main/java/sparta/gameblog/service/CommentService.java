@@ -30,7 +30,7 @@ public class CommentService {
         );
         Comment comment = commentMapper.toEntity(requestDto, currentUser);
         post.addComment(comment);
-        this.commentRepository.save(comment);
+        Comment savedComment = this.commentRepository.save(comment);
         return commentMapper.toCommentCreateResponseDto(commentRepository.save(comment));
     }
 
