@@ -36,8 +36,9 @@ public class OAuth2UserServiceImpl extends DefaultOAuth2UserService {
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        String provider = userRequest.getClientRegistration().getRegistrationId();
-        OAuth2UserInfo oAuth2UserInfo = oAuth2UserInfoList.stream().filter(userInfo -> userInfo.supports(provider))
+        String providerId = userRequest.getClientRegistration().getRegistrationId();
+        OAuth2UserInfo oAuth2UserInfo = oAuth2UserInfoList.stream()
+                .filter(userInfo -> userInfo.supports(providerId))
                 .findFirst()
                 .orElseThrow(() -> new OAuth2AuthenticationException("지원하지 않는 provider"));
 
@@ -52,7 +53,7 @@ public class OAuth2UserServiceImpl extends DefaultOAuth2UserService {
             userSignupRequestDto.setPassword(UUID.randomUUID().toString().substring(0, 8));
             userSignupRequestDto.setRole(User.Role.NORMAL);
             userSignupRequestDto.setStatusCode(User.StatusCode.ACTIVE);
-            user = this.userService.signup(userSignupRequestDto);
+            user = this.userService.signup(userSignupRequestDto, providerId);
         }
 
         return new UserPrincipal(user);
