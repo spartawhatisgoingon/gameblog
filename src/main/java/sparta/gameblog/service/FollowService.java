@@ -12,6 +12,8 @@ import sparta.gameblog.mapper.FollowMapper;
 import sparta.gameblog.repository.FollowRepository;
 import sparta.gameblog.repository.UserRepository;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class FollowService {
@@ -38,6 +40,10 @@ public class FollowService {
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
 
         followRepository.delete(follow);
+    }
+
+    public List<User> getFollowers(User currentUser) {
+        return followRepository.findAllByFollowingUserId(currentUser.getId()).stream().map(Follow::getFollowerUser).toList();
     }
 
     private User checkFollow(FollowRequestDto requestDto, User currentUser) {
