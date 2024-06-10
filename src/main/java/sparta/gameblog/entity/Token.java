@@ -32,8 +32,8 @@ public class Token {
 
 
     @Builder
-    public Token(Type type, User user, int emailTokenExpirationSeconds ) {
-        this.expiredAt = LocalDateTime.now().plusSeconds(emailTokenExpirationSeconds);
+    public Token(Type type, User user, int tokenExpirationSeconds ) {
+        this.expiredAt = LocalDateTime.now().plusSeconds(tokenExpirationSeconds);
         this.token = UUID.randomUUID();
         this.type = type;
         this.user = user;

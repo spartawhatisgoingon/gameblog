@@ -17,7 +17,8 @@ public enum ErrorCode {
     // user
     PASSWORD_MISMATCH(HttpStatus.UNAUTHORIZED, "PASSWORD MISMATCH"),
     SAME_PASSWORD(HttpStatus.BAD_REQUEST, "SAME PASSWORD"),
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER NOT FOUND");
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER NOT FOUND"),
+    EXPIRED_TOKEN(HttpStatus.BAD_REQUEST, "EXPIRED TOKEN");
 
 
     private final HttpStatus statusCode;
