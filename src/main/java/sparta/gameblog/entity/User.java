@@ -38,6 +38,9 @@ public class User extends Timestamp {
     @Enumerated(EnumType.STRING)
     private Role role; // 0: normal, 1: admin
 
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private SnsInfo snsInfo;
+
     /*
      * 이거의 장점? -> 위에다 만들면 NoArgsCons & AllArgsCons 를 다 생성해야함
      * 거기다가 id 는 repository 가 알아서 만들도록 위임해야하는데 AllArgs 를 사용하면 id 도 기본값으로 자동 세팅됨
@@ -64,6 +67,11 @@ public class User extends Timestamp {
         this.name = name;
         this.introduction = introduction;
         this.password = password;
+    }
+
+    public void setSnsInfo(SnsInfo snsInfo) {
+        snsInfo.setUser(this);
+        this.snsInfo = snsInfo;
     }
 
     public enum StatusCode {

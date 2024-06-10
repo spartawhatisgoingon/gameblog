@@ -20,12 +20,10 @@ import java.util.UUID;
 
 @Service
 public class OAuth2UserServiceImpl extends DefaultOAuth2UserService {
-    private final UserRepository userRepository;
     private final List<OAuth2UserInfo> oAuth2UserInfoList;
     private final UserService userService;
 
-    public OAuth2UserServiceImpl(UserRepository userRepository, UserService userService) {
-        this.userRepository = userRepository;
+    public OAuth2UserServiceImpl(UserService userService) {
         this.userService = userService;
         this.oAuth2UserInfoList = List.of(new NaverOAuth2UserInfo(), new GoogleOAuth2UserInfo());
     }
@@ -36,15 +34,22 @@ public class OAuth2UserServiceImpl extends DefaultOAuth2UserService {
 
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        String provider = userRequest.getClientRegistration().getRegistrationId();
-        OAuth2UserInfo oAuth2UserInfo = oAuth2UserInfoList.stream().filter(userInfo -> userInfo.supports(provider))
+        String providerId = userRequest.getClientRegistration().getRegistrationId();
+        OAuth2UserInfo oAuth2UserInfo = oAuth2UserInfoList.stream()
+                .filter(userInfo -> userInfo.supports(providerId))
                 .findFirst()
                 .orElseThrow(() -> new OAuth2AuthenticationException("지원하지 않는 provider"));
 
         User user;
         try {
-            user = this.userRepository.findByEmail(oAuth2UserInfo.getEmailFromAttributes(oAuth2User.getAttributes()))
-                    .orElseThrow(() -> new RuntimeException("user 없음"));
+            user = this.userService.getUserByEmailWithSnsInfo(
+                    oAuth2UserInfo.getEmailFromAttributes(oAuth2User.getAttributes()),
+                    () -> new OAuth2AuthenticationException("존재하지 않는 유저")
+            );
+
+            if (user.getSnsInfo() == null) {
+                this.userService.addSnsInfoToUser(user, providerId);
+            }
         } catch (Exception e) {
             UserSignupRequestDto userSignupRequestDto = new UserSignupRequestDto();
             userSignupRequestDto.setEmail(oAuth2UserInfo.getEmailFromAttributes(oAuth2User.getAttributes()));
@@ -52,7 +57,7 @@ public class OAuth2UserServiceImpl extends DefaultOAuth2UserService {
             userSignupRequestDto.setPassword(UUID.randomUUID().toString().substring(0, 8));
             userSignupRequestDto.setRole(User.Role.NORMAL);
             userSignupRequestDto.setStatusCode(User.StatusCode.ACTIVE);
-            user = this.userService.signup(userSignupRequestDto);
+            user = this.userService.signup(userSignupRequestDto, providerId);
         }
 
         return new UserPrincipal(user);
