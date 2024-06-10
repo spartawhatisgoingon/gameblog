@@ -5,6 +5,7 @@ import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,6 +15,7 @@ import sparta.gameblog.entity.User;
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -25,6 +27,13 @@ public class JwtUtil {
     public static final String CLAIM_STATUS_CODE = "status_code";
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String AUTHORIZATION_TYPE = "Bearer";
+
+    @Value("${jwt.access-expire-time}")
+    private int accessExpirationTime;
+
+    @Getter
+    @Value("${jwt.refresh-expire-time}")
+    private int refreshExpirationTime;
 
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
@@ -45,11 +54,12 @@ public class JwtUtil {
 
     public String createAccessToken(User user) {
         Date date = new Date();
+        Date expireDate = new Date(date.getTime() + accessExpirationTime);
 
         return Jwts.builder()
                 // set 으로 하는건 정해진것
                 .setSubject(user.getEmail())
-                .setExpiration(new Date(date.getTime() + 1000 * 60 * 30))
+                .setExpiration(expireDate)
                 .setIssuedAt(date)
                 // claim 우리가 넣고 싶은 정보들
                 .claim(CLAIM_ID, user.getId())
@@ -60,6 +70,13 @@ public class JwtUtil {
                 .signWith(key, signatureAlgorithm)
                 .compact();
     }
+
+    public UUID createRefreshToken() {
+//        Date date = new Date();
+//        Date expireDate = new Date(date.getTime() + refreshExpirationTime);
+        return UUID.randomUUID();
+    }
+
 
     public String getJwtFromHeader(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);

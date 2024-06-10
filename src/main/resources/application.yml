@@ -12,6 +12,10 @@ auth-code-expiration-seconds: 180
 auth-email-title: '"gameblog ???? ?? ????"'
 jwt:
     key: ${JWT_SECRET_KEY}
+    access-expire-time: ${ACCESS_EXPIRE_TIME}
+    refresh-expire-time: ${REFRESH_EXPIRE_TIME}
+
+
 spring:
     application:
         name: GameBlog
